@@ -26,4 +26,18 @@ inline void printOK(const string &mensaje) {
   cout << GREEN << BOLD << mensaje << RESET << endl;
 }
 
+void ArbolAVL::mostrarNodo(Nodo* nodo) {
+    if (nodo == nullptr) return;
+
+    cout << YELLOW << BOLD << "Código IATA: " << RESET << nodo->codigoIATA << endl;
+    cout << BLUE << "País: " << RESET << nodo->pais << " | "
+         << "Ciudad: " << nodo->ciudad << " | "
+         << "Estadio FIFA: " << nodo->estadioFIFA << " | "
+         << "Estadio Oficial: " << nodo->estadioOficial << endl;
+    cout << MAGENTA << "Capacidad: " << RESET << nodo->capacidad
+         << " | " << CYAN << "Año inauguración: " << RESET << nodo->anio << endl;
+    cout << "-------------------------------------------" << endl;
+}
+
+
 #endif
