@@ -2,7 +2,7 @@
 #include "CSVManager.h" 
 #include "Nodo.h"
 #include "print_helpers.h"
-#include "grafo.h"
+#include "Grafo.h"
 #include <iostream>
 #include <limits.h>
 #include <unistd.h>
