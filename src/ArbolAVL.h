@@ -6,7 +6,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
 #include <algorithm>
 
 using namespace std;
@@ -179,11 +178,11 @@ private:
         }
     }
 
-    void llenarVector(Nodo* nodo, vector<Nodo*>& lista) {
+    void llenarVector(Nodo* nodo, Nodo** lista, int& index) {
         if (nodo != nullptr) {
-            llenarVector(nodo->izquierda, lista);
-            lista.push_back(nodo);
-            llenarVector(nodo->derecha, lista);
+            llenarVector(nodo->izquierda, lista, index);
+            lista[index++] = nodo;
+            llenarVector(nodo->derecha, lista, index);
         }
     }
 
@@ -204,6 +203,11 @@ private:
                     << "," << nodo->capacidad << "," << nodo->anio << "\n";
             guardarEnCSV(nodo->derecha, archivo);
         }
+    }
+
+    int contarNodos(Nodo* nodo) {
+        if (nodo == nullptr) return 0;
+        return 1 + contarNodos(nodo->izquierda) + contarNodos(nodo->derecha);
     }
 
 public:
@@ -242,11 +246,31 @@ public:
 
     void listarOrdenadoPorAnio() {
         printTitulo("Sedes ordenadas por año de inauguración");
-        vector<Nodo*> lista;
-        llenarVector(raiz, lista);
-        sort(lista.begin(), lista.end(), [](Nodo* a, Nodo* b) { return a->anio < b->anio; });
-        for (Nodo* n : lista)
-            mostrarNodo(n);
+
+        // Primero contar cuántos nodos hay para reservar el arreglo
+        int cantidad = contarNodos(raiz);
+        if (cantidad == 0) return;
+
+        Nodo** lista = new Nodo*[cantidad];
+        int index = 0;
+        llenarVector(raiz, lista, index);
+
+        // Ordenar manualmente por año
+        for (int i = 0; i < cantidad - 1; ++i) {
+            for (int j = i + 1; j < cantidad; ++j) {
+                if (lista[i]->anio > lista[j]->anio) {
+                    Nodo* temp = lista[i];
+                    lista[i] = lista[j];
+                    lista[j] = temp;
+                }
+            }
+        }
+
+        // Mostrar
+        for (int i = 0; i < cantidad; ++i)
+            mostrarNodo(lista[i]);
+
+        delete[] lista;
     }
 
     // Guardar CSV
