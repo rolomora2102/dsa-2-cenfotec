@@ -1,7 +1,7 @@
 # 📂 Proyecto AVL — Mundial 2026
 
 Este proyecto implementa un árbol **AVL** para gestionar sedes de estadios usando **C++ puro**.  
-Toda la lógica de inserción, búsqueda, eliminación y recorrido está desarrollada desde cero **sin librerías externas de estructuras de datos**.
+Toda la lógica de inserción, búsqueda, eliminación y recorrido está desarrollada desde cero.
 
 ---
 
