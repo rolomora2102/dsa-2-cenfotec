@@ -11,8 +11,6 @@ using namespace std;
 
 class CSVManager {
 public:
-  // Cargar datos desde CSV al árbol AVL
-
   static void cargarCSV(ArbolAVL &arbol, string filename) {
     ifstream archivo(filename);
     if (!archivo.is_open()) {
@@ -21,7 +19,7 @@ public:
     }
 
     string linea;
-    getline(archivo, linea); // Saltar encabezado
+    getline(archivo, linea);
     int lineNumber = 1;
 
     while (getline(archivo, linea)) {
@@ -35,7 +33,6 @@ public:
         datos[i++] = campo;
       }
 
-      // Validar que tenemos 7 campos
       if (i < 7) {
         cerr << "Warning: línea " << lineNumber << " incompleta: '" << linea
              << "'" << endl;
@@ -70,7 +67,7 @@ public:
     }
     archivo.close();
   }
-  // Guardar árbol en CSV
+
   static void guardarCSV(ArbolAVL &arbol, string filename) {
     ofstream archivo(filename);
     if (!archivo.is_open()) {
@@ -83,9 +80,6 @@ public:
     archivo.close();
   }
 
-  // Cargar conexiones del grafo desde CSV (con soporte opcional para campo
-  // tipo)
-
   static void cargarConexiones(Grafo &grafo, string filename) {
     ifstream archivo(filename);
     if (!archivo.is_open()) {
@@ -94,10 +88,8 @@ public:
     }
 
     string linea;
-    getline(archivo, linea); // Saltar encabezado
-
-    int lineNumber = 1; // Contador de líneas para debug
-
+    getline(archivo, linea);
+    int lineNumber = 1;
     while (getline(archivo, linea)) {
       ++lineNumber;
       stringstream ss(linea);
@@ -112,13 +104,12 @@ public:
         } catch (...) {
           cerr << "Error: peso inválido en línea " << lineNumber << ": '"
                << pesoStr << "'" << endl;
-          continue; // Saltar línea con peso inválido
+          continue;
         }
 
-        int tipo = 1; // valor por defecto
+        int tipo = 1;
 
         if (getline(ss, tipoStr, ',')) {
-          // Eliminar espacios en blanco al inicio y final
           tipoStr.erase(0, tipoStr.find_first_not_of(" \t\r\n"));
           tipoStr.erase(tipoStr.find_last_not_of(" \t\r\n") + 1);
 
@@ -142,7 +133,6 @@ public:
     archivo.close();
   }
 
-  // Guardar conexiones del grafo en CSV
   static void guardarConexiones(Grafo &grafo, string filename) {
     ofstream archivo(filename);
     if (!archivo.is_open()) {
@@ -152,7 +142,7 @@ public:
     }
 
     archivo << "origen,destino,peso\n";
-    grafo.guardarEnCSV(filename); // Usar el método existente de tu grafo
+    grafo.guardarEnCSV(filename);
     archivo.close();
   }
 };

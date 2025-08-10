@@ -1,18 +1,17 @@
-IATA,País,Ciudad,Estadio FIFA,Estadio Oficial,Capacidad,Año,Latitud,Longitud
-ATL,EE.UU.,Atlanta,Atlanta Stadium,Mercedes-Benz Stadium,71000,2017,33.755, -84.39
-BOS,EE.UU.,Boston,Boston Stadium,Gillette Stadium,65878,2002,42.365, -71.258
-DFW,EE.UU.,Dallas,Dallas Stadium,AT&T Stadium,80000,2009,32.747, -97.094
-GDL,México,Guadalajara,Guadalajara Stadium,Estadio Akron,48071,2010,20.676, -103.351
-IAH,EE.UU.,Houston,Houston Stadium,NRG Stadium,72220,2002,29.683, -95.41
-JFK,EE.UU.,New York/New Jersey,New York New Jersey Stadium,MetLife Stadium,82500,2010,40.813, -74.074
-LAX,EE.UU.,Los Angeles,Los Angeles Stadium,SoFi Stadium,70000,2020,33.953, -118.339
-MCI,EE.UU.,Kansas City,Kansas City Stadium,Arrowhead Stadium,76416,1972,39.049, -94.483
-MEX,México,Ciudad de México,Mexico City Stadium,Estadio Azteca,87523,1966,19.303, -99.150
-MIA,EE.UU.,Miami,Miami Stadium,Hard Rock Stadium,65326,1987,25.958, -80.238
-MTY,México,Monterrey,Monterrey Stadium,Estadio BBVA,53500,2015,25.671, -100.309
-PHL,EE.UU.,Philadelphia,Philadelphia Stadium,Lincoln Financial Field,69796,2003,39.900, -75.167
-SEA,EE.UU.,Seattle,Seattle Stadium,Lumen Field,68740,2002,47.595, -122.33
-SFO,EE.UU.,San Francisco Bay,San Francisco Bay Stadium,Levi's Stadium,68500,2014,37.404, -121.97
-YVR,Canadá,Vancouver,Vancouver Stadium,BC Place Stadium,54500,1983,49.276, -123.11
-YYZ,Canadá,Toronto,Toronto Stadium,BMO Field,30000,2007,43.633, -79.44
-
+IATA,País,Ciudad,Estadio FIFA,Estadio Oficial,Capacidad,Año
+ATL,EE.UU.,Atlanta,Atlanta Stadium,Mercedes-Benz Stadium,71000,2017
+BOS,EE.UU.,Boston,Boston Stadium,Gillette Stadium,65878,2002
+DFW,EE.UU.,Dallas,Dallas Stadium,AT&T Stadium,80000,2009
+GDL,México,Guadalajara,Guadalajara Stadium,Estadio Akron,48071,2010
+IAH,EE.UU.,Houston,Houston Stadium,NRG Stadium,72220,2002
+JFK,EE.UU.,New York/New Jersey,New York New Jersey Stadium,MetLife Stadium,82500,2010
+LAX,EE.UU.,Los Angeles,Los Angeles Stadium,SoFi Stadium,70000,2020
+MCI,EE.UU.,Kansas City,Kansas City Stadium,Arrowhead Stadium,76416,1972
+MEX,México,Ciudad de México,Mexico City Stadium,Estadio Azteca,87523,1966
+MIA,EE.UU.,Miami,Miami Stadium,Hard Rock Stadium,65326,1987
+MTY,México,Monterrey,Monterrey Stadium,Estadio BBVA,53500,2015
+PHL,EE.UU.,Philadelphia,Philadelphia Stadium,Lincoln Financial Field,69796,2003
+SEA,EE.UU.,Seattle,Seattle Stadium,Lumen Field,68740,2002
+SFO,EE.UU.,San Francisco Bay,San Francisco Bay Stadium,Levi's Stadium,68500,2014
+YVR,Canadá,Vancouver,Vancouver Stadium,BC Place Stadium,54500,1983
+YYZ,Canadá,Toronto,Toronto Stadium,BMO Field,30000,2007

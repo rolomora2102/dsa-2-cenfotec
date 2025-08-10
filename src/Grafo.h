@@ -1,7 +1,6 @@
 // grafo.h
 #ifndef GRAFO_H
 #define GRAFO_H
-#include "graphs/graphs.hpp"
 #include "tabulate/tabulate.hpp"
 using namespace tabulate;
 
@@ -117,161 +116,62 @@ public:
   }
 
   void mostrarGrafo() {
-    using namespace graphs;
-
-    const int MAX_NODOS = 50; // Máximo de nodos según tu definición de Grafo
-    const int MAX_CONEXIONES = 100; // Máximo estimado de conexiones
-
-    struct Punto {
-      long double x;
-      long double y;
-    };
-
-    struct GraficoData {
-      int num_puntos_tipo1;
-      int num_puntos_tipo2;
-      Punto puntos_tipo1[MAX_CONEXIONES][2];
-      Punto puntos_tipo2[MAX_CONEXIONES][2];
-      int num_nodos;
-      Punto nodos[MAX_NODOS];
-    };
-
-    GraficoData datos;
-    datos.num_puntos_tipo1 = 0;
-    datos.num_puntos_tipo2 = 0;
-    datos.num_nodos = numVertices;
-
-    // Asignar coordenadas circulares a los nodos
-    long double angle = 0;
-    const long double angle_step = 2 * M_PI / numVertices;
+    cout << "===== Conexiones del Grafo =====\n";
     for (int i = 0; i < numVertices; ++i) {
-      datos.nodos[i].x = cos(angle) * 10;
-      datos.nodos[i].y = sin(angle) * 10;
-      angle += angle_step;
-    }
-
-    // Procesar conexiones (aristas)
-    for (int i = 0; i < numVertices; ++i) {
+      cout << vertices[i].codigoIATA << " -> ";
       NodoAdyacente *actual = vertices[i].inicio;
       while (actual != nullptr) {
-        // Encontrar índice del destino
-        int idx_destino = -1;
-        for (int j = 0; j < numVertices; ++j) {
-          if (vertices[j].codigoIATA == actual->arista.destino) {
-            idx_destino = j;
-            break;
-          }
+        cout << actual->arista.destino << "[";
+        if (actual->arista.tipo == 1) {
+          cout << "Dist:" << actual->arista.peso << "km";
+        } else {
+          cout << "Vuelos:" << actual->arista.peso;
         }
-
-        if (idx_destino != -1 && i < idx_destino) {
-          if (actual->arista.tipo == 1 &&
-              datos.num_puntos_tipo1 < MAX_CONEXIONES) {
-            datos.puntos_tipo1[datos.num_puntos_tipo1][0] = datos.nodos[i];
-            datos.puntos_tipo1[datos.num_puntos_tipo1][1] =
-                datos.nodos[idx_destino];
-            datos.num_puntos_tipo1++;
-          } else if (actual->arista.tipo == 2 &&
-                     datos.num_puntos_tipo2 < MAX_CONEXIONES) {
-            datos.puntos_tipo2[datos.num_puntos_tipo2][0] = datos.nodos[i];
-            datos.puntos_tipo2[datos.num_puntos_tipo2][1] =
-                datos.nodos[idx_destino];
-            datos.num_puntos_tipo2++;
-          }
-        }
-
+        cout << "] ";
         actual = actual->siguiente;
       }
-    }
-
-    // Opciones para nodos (todos iguales)
-    options opts_nodos;
-    opts_nodos.title = "Grafo de Conexiones";
-    opts_nodos.color = color_blue;
-    opts_nodos.type = type_braille;
-    opts_nodos.mark = mark_plus;
-    opts_nodos.style = style_light;
-
-    // Dibujar nodos
-    for (int i = 0; i < datos.num_nodos; i++) {
-      long double x = datos.nodos[i].x;
-      long double y = datos.nodos[i].y;
-      graphs::function_1<long double>(
-          24, 80, 0, 10000, 0, 10000,
-          [x, y](long double) -> long double { return y; }, opts_nodos);
-    }
-
-    // Opciones para tipo 1 (por ejemplo, distancia geográfica)
-    options opts_tipo1 = opts_nodos;
-    opts_tipo1.color = color_green; // color verde para tipo 1
-
-    // Opciones para tipo 2 (por ejemplo, vuelos directos)
-    options opts_tipo2 = opts_nodos;
-    opts_tipo2.color = color_red; // color rojo para tipo 2
-
-    // Dibujar aristas tipo 1
-    for (int i = 0; i < datos.num_puntos_tipo1; i++) {
-      long double x1 = datos.puntos_tipo1[i][0].x;
-      long double y1 = datos.puntos_tipo1[i][0].y;
-      long double x2 = datos.puntos_tipo1[i][1].x;
-      long double y2 = datos.puntos_tipo1[i][1].y;
-
-      graphs::function_1<long double>(
-          24, 80, 0, 10000, 0, 10000,
-          [x1, x2, y1, y2](long double x) -> long double {
-            if (x2 == x1)
-              return (x == x1) ? y1
-                               : std::numeric_limits<long double>::quiet_NaN();
-            long double m = (y2 - y1) / (x2 - x1);
-            long double b = y1 - m * x1;
-            return m * x + b;
-          },
-          opts_tipo1);
-    }
-
-    // Dibujar aristas tipo 2
-    for (int i = 0; i < datos.num_puntos_tipo2; i++) {
-      long double x1 = datos.puntos_tipo2[i][0].x;
-      long double y1 = datos.puntos_tipo2[i][0].y;
-      long double x2 = datos.puntos_tipo2[i][1].x;
-      long double y2 = datos.puntos_tipo2[i][1].y;
-
-      graphs::function_1<long double>(
-          24, 80, 0, 10000, 0, 10000,
-          [x1, x2, y1, y2](long double x) -> long double {
-            if (x2 == x1)
-              return (x == x1) ? y1
-                               : std::numeric_limits<long double>::quiet_NaN();
-            long double m = (y2 - y1) / (x2 - x1);
-            long double b = y1 - m * x1;
-            return m * x + b;
-          },
-          opts_tipo2);
-    }
-
-    // Leyenda
-    printf("\nLeyenda:\n");
-    printf("● Nodos (ciudades)\n");
-    printf("─ Aristas tipo 1 (distancia geográfica) [verde]\n");
-    printf("─ Aristas tipo 2 (vuelos directos) [rojo]\n");
-
-    // Mostrar ciudades con su código
-    printf("\nCiudades:\n");
-    for (int i = 0; i < numVertices; ++i) {
-      printf("%s: %s\n", vertices[i].codigoIATA.c_str(),
-             ciudades[i].nombreCiudad.c_str());
+      cout << endl;
     }
   }
 
-  void dijkstra(const string &origen) {
+  void mostrarGrafoPorTipo(int tipo) {
+    for (int i = 0; i < numVertices; ++i) {
+      cout << vertices[i].codigoIATA << " -> ";
+      NodoAdyacente *actual = vertices[i].inicio;
+      bool tieneConexiones = false;
+
+      while (actual != nullptr) {
+        if (actual->arista.tipo == tipo) {
+          cout << actual->arista.destino << "(" << actual->arista.peso << ") ";
+          tieneConexiones = true;
+        }
+        actual = actual->siguiente;
+      }
+
+      if (!tieneConexiones) {
+        cout << "Sin conexiones de este tipo";
+      }
+      cout << endl;
+    }
+  }
+
+  void flow(const string &origen, int tipo = 1) {
     float dist[MAX_VERTICES];
     bool visitado[MAX_VERTICES] = {false};
     int origenIdx = encontrarIndice(origen);
 
+    if (origenIdx == -1) {
+      cout << "Ciudad origen no encontrada." << endl;
+      return;
+    }
+
+    // Inicializar distancias
     for (int i = 0; i < numVertices; ++i) {
       dist[i] = numeric_limits<float>::infinity();
     }
     dist[origenIdx] = 0;
 
+    // Algoritmo de Dijkstra
     for (int i = 0; i < numVertices; ++i) {
       int u = -1;
       float minDist = numeric_limits<float>::infinity();
@@ -288,18 +188,124 @@ public:
 
       NodoAdyacente *actual = vertices[u].inicio;
       while (actual != nullptr) {
-        int v = encontrarIndice(actual->arista.destino);
-        if (!visitado[v] && dist[u] + actual->arista.peso < dist[v]) {
-          dist[v] = dist[u] + actual->arista.peso;
+        // Solo considerar aristas del tipo especificado
+        if (actual->arista.tipo == tipo) {
+          int v = encontrarIndice(actual->arista.destino);
+          if (!visitado[v] && dist[u] + actual->arista.peso < dist[v]) {
+            dist[v] = dist[u] + actual->arista.peso;
+          }
         }
         actual = actual->siguiente;
       }
     }
 
-    cout << "\nDistancias desde " << origen << ":\n";
+    // Mostrar resultados
+    if (tipo == 1) {
+      cout << "\nDistancias (km) desde " << origen << ":\n";
+    } else {
+      cout << "\nMáximo número de vuelos diarios desde " << origen << ":\n";
+    }
+
     for (int i = 0; i < numVertices; ++i) {
-      cout << origen << " -> " << vertices[i].codigoIATA << ": " << dist[i]
-           << endl;
+      if (dist[i] == numeric_limits<float>::infinity()) {
+        cout << origen << " -> " << vertices[i].codigoIATA << ": No hay ruta"
+             << endl;
+      } else {
+        cout << origen << " -> " << vertices[i].codigoIATA << ": " << dist[i]
+             << endl;
+      }
+    }
+  }
+
+  void dijkstra(const string &origen, const string &destino) {
+    float dist[MAX_VERTICES];
+    int padre[MAX_VERTICES];
+    bool visitado[MAX_VERTICES] = {false};
+    int origenIdx = encontrarIndice(origen);
+    int destinoIdx = encontrarIndice(destino);
+
+    if (origenIdx == -1 || destinoIdx == -1) {
+      cout << "Una o ambas sedes no fueron encontradas." << endl;
+      return;
+    }
+
+    for (int i = 0; i < numVertices; ++i) {
+      dist[i] = numeric_limits<float>::infinity();
+      padre[i] = -1;
+    }
+    dist[origenIdx] = 0;
+
+    for (int i = 0; i < numVertices; ++i) {
+      int u = -1;
+      float minDist = numeric_limits<float>::infinity();
+      for (int j = 0; j < numVertices; ++j) {
+        if (!visitado[j] && dist[j] < minDist) {
+          minDist = dist[j];
+          u = j;
+        }
+      }
+
+      if (u == -1 || u == destinoIdx)
+        break;
+      visitado[u] = true;
+
+      NodoAdyacente *actual = vertices[u].inicio;
+      while (actual != nullptr) {
+        int v = encontrarIndice(actual->arista.destino);
+        if (!visitado[v] && dist[u] + actual->arista.peso < dist[v]) {
+          dist[v] = dist[u] + actual->arista.peso;
+          padre[v] = u;
+        }
+        actual = actual->siguiente;
+      }
+    }
+
+    cout << "\n=== RUTA MÁS CORTA ===" << endl;
+    cout << "De: " << origen << " (" << ciudades[origenIdx].nombreCiudad << ")"
+         << endl;
+    cout << "A: " << destino << " (" << ciudades[destinoIdx].nombreCiudad << ")"
+         << endl;
+    cout << "Distancia total: " << dist[destinoIdx] << " km" << endl;
+
+    if (dist[destinoIdx] == numeric_limits<float>::infinity()) {
+      cout << "No existe ruta entre estas ciudades." << endl;
+      return;
+    }
+
+    cout << "Ruta: ";
+    int camino[MAX_VERTICES];
+    int longitud = 0;
+    int actual = destinoIdx;
+
+    while (actual != -1) {
+      camino[longitud++] = actual;
+      actual = padre[actual];
+    }
+
+    for (int i = longitud - 1; i >= 0; --i) {
+      cout << vertices[camino[i]].codigoIATA;
+      if (i > 0)
+        cout << " -> ";
+    }
+    cout << endl;
+
+    cout << "\nDetalle del recorrido:\n";
+    for (int i = longitud - 1; i > 0; --i) {
+      int u = camino[i];
+      int v = camino[i - 1];
+      float distancia = 0;
+
+      NodoAdyacente *nodo = vertices[u].inicio;
+      while (nodo != nullptr) {
+        if (nodo->arista.destino == vertices[v].codigoIATA) {
+          distancia = nodo->arista.peso;
+          break;
+        }
+        nodo = nodo->siguiente;
+      }
+
+      cout << vertices[u].codigoIATA << " -> " << vertices[v].codigoIATA << " ("
+           << distancia << " km)" << endl;
     }
   }
 
@@ -364,13 +370,31 @@ public:
     }
     archivo.close();
   }
+  void cargarVuelosDiariosDesdeCSV(const string &archivoPath) {
+    ifstream archivo(archivoPath);
+    string linea;
+    getline(archivo, linea); // saltar encabezado
+    while (getline(archivo, linea)) {
+      size_t pos1 = linea.find(',');
+      size_t pos2 = linea.find(',', pos1 + 1);
+      if (pos1 == string::npos || pos2 == string::npos)
+        continue;
+
+      string origen = linea.substr(0, pos1);
+      string destino = linea.substr(pos1 + 1, pos2 - pos1 - 1);
+      float vuelos = stof(linea.substr(pos2 + 1));
+
+      agregarArista(origen, destino, vuelos, 2); // Tipo 2 para vuelos
+    }
+    archivo.close();
+  }
 
   void cargarCiudadesDesdeCSV(const string &archivoPath) {
     ifstream archivo(archivoPath);
     string linea;
     bool primeraLinea = true;
     while (getline(archivo, linea)) {
-      if (primeraLinea) { // Saltar encabezado
+      if (primeraLinea) {
         primeraLinea = false;
         continue;
       }

@@ -6,10 +6,8 @@ using namespace std;
 
 class Nodo {
 public:
-  // Clave de búsqueda
   string codigoIATA;
 
-  // Datos de la sede
   string pais;
   string ciudad;
   string estadioFIFA;
@@ -17,14 +15,11 @@ public:
   int capacidad;
   int anio;
 
-  // Punteros del árbol
   Nodo *izquierda;
   Nodo *derecha;
 
-  // Factor de altura para balanceo (AVL)
   int altura;
 
-  // Constructor
   Nodo(string codigo, string p, string c, string estFIFA, string estOficial,
        int cap, int a) {
     codigoIATA = codigo;
@@ -37,7 +32,7 @@ public:
 
     izquierda = nullptr;
     derecha = nullptr;
-    altura = 1; // Por default, un nodo nuevo tiene altura 1
+    altura = 1;
   }
 };
 
