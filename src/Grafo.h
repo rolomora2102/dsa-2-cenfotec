@@ -217,7 +217,7 @@ public:
     }
   }
 
-  void dijkstra(const string &origen, const string &destino) {
+  void dijkstra(const string &origen, const string &destino, int tipo = 1) {
     float dist[MAX_VERTICES];
     int padre[MAX_VERTICES];
     bool visitado[MAX_VERTICES] = {false};
@@ -251,10 +251,13 @@ public:
 
       NodoAdyacente *actual = vertices[u].inicio;
       while (actual != nullptr) {
-        int v = encontrarIndice(actual->arista.destino);
-        if (!visitado[v] && dist[u] + actual->arista.peso < dist[v]) {
-          dist[v] = dist[u] + actual->arista.peso;
-          padre[v] = u;
+        // Solo considerar aristas del tipo especificado
+        if (actual->arista.tipo == tipo) {
+          int v = encontrarIndice(actual->arista.destino);
+          if (!visitado[v] && dist[u] + actual->arista.peso < dist[v]) {
+            dist[v] = dist[u] + actual->arista.peso;
+            padre[v] = u;
+          }
         }
         actual = actual->siguiente;
       }
@@ -265,10 +268,19 @@ public:
          << endl;
     cout << "A: " << destino << " (" << ciudades[destinoIdx].nombreCiudad << ")"
          << endl;
-    cout << "Distancia total: " << dist[destinoIdx] << " km" << endl;
+
+    if (tipo == 1) {
+      cout << "Criterio: Distancia geográfica" << endl;
+      cout << "Distancia total: " << dist[destinoIdx] << " km" << endl;
+    } else {
+      cout << "Criterio: Vuelos directos" << endl;
+      cout << "Total de vuelos: " << dist[destinoIdx] << endl;
+    }
 
     if (dist[destinoIdx] == numeric_limits<float>::infinity()) {
-      cout << "No existe ruta entre estas ciudades." << endl;
+      cout << "No existe ruta entre estas ciudades con el tipo de conexión "
+              "especificado."
+           << endl;
       return;
     }
 
@@ -293,23 +305,30 @@ public:
     for (int i = longitud - 1; i > 0; --i) {
       int u = camino[i];
       int v = camino[i - 1];
-      float distancia = 0;
+      float peso = 0;
 
       NodoAdyacente *nodo = vertices[u].inicio;
       while (nodo != nullptr) {
-        if (nodo->arista.destino == vertices[v].codigoIATA) {
-          distancia = nodo->arista.peso;
+        if (nodo->arista.destino == vertices[v].codigoIATA &&
+            nodo->arista.tipo == tipo) {
+          peso = nodo->arista.peso;
           break;
         }
         nodo = nodo->siguiente;
       }
 
-      cout << vertices[u].codigoIATA << " -> " << vertices[v].codigoIATA << " ("
-           << distancia << " km)" << endl;
+      cout << vertices[u].codigoIATA << " -> " << vertices[v].codigoIATA
+           << " (";
+      if (tipo == 1) {
+        cout << peso << " km";
+      } else {
+        cout << peso << " vuelos";
+      }
+      cout << ")" << endl;
     }
   }
 
-  void prim() {
+  void prim(int tipo = 1) {
     bool enMST[MAX_VERTICES] = {false};
     float clave[MAX_VERTICES];
     int padre[MAX_VERTICES];
@@ -336,25 +355,35 @@ public:
 
       NodoAdyacente *actual = vertices[u].inicio;
       while (actual != nullptr) {
-        int v = encontrarIndice(actual->arista.destino);
-        if (!enMST[v] && actual->arista.peso < clave[v]) {
-          clave[v] = actual->arista.peso;
-          padre[v] = u;
+        // Solo considerar aristas del tipo especificado
+        if (actual->arista.tipo == tipo) {
+          int v = encontrarIndice(actual->arista.destino);
+          if (!enMST[v] && actual->arista.peso < clave[v]) {
+            clave[v] = actual->arista.peso;
+            padre[v] = u;
+          }
         }
         actual = actual->siguiente;
       }
     }
 
     float pesoTotal = 0;
-    cout << "\nÁrbol de Expansión Mínima (Prim):\n";
+    cout << "\nÁrbol de Expansión Mínima (Prim):" << endl;
+    if (tipo == 1) {
+      cout << "Criterio: Distancia geográfica" << endl;
+    } else {
+      cout << "Criterio: Vuelos directos" << endl;
+    }
+    cout << endl;
+
     for (int i = 1; i < numVertices; ++i) {
       if (padre[i] != -1) {
         cout << vertices[padre[i]].codigoIATA << " - " << vertices[i].codigoIATA
-             << " (" << clave[i] << ")\n";
+             << " (" << clave[i] << " km)" << endl;
         pesoTotal += clave[i];
       }
     }
-    cout << "\nPeso total del árbol: " << pesoTotal << endl;
+    cout << "\nPeso total del árbol: " << pesoTotal << " km" << endl;
   }
 
   void cargarDesdeCSV(const string &archivoPath) {
@@ -480,7 +509,7 @@ public:
   }
 
   // Función para encontrar la sede más lejana desde una base
-  void encontrarSedeMasLejana(const string &origen) {
+  void encontrarSedeMasLejana(const string &origen, int tipo = 1) {
     float dist[MAX_VERTICES];
     bool visitado[MAX_VERTICES] = {false};
     int origenIdx = encontrarIndice(origen);
@@ -513,9 +542,12 @@ public:
 
       NodoAdyacente *actual = vertices[u].inicio;
       while (actual != nullptr) {
-        int v = encontrarIndice(actual->arista.destino);
-        if (!visitado[v] && dist[u] + actual->arista.peso < dist[v]) {
-          dist[v] = dist[u] + actual->arista.peso;
+        // Solo considerar aristas del tipo especificado
+        if (actual->arista.tipo == tipo) {
+          int v = encontrarIndice(actual->arista.destino);
+          if (!visitado[v] && dist[u] + actual->arista.peso < dist[v]) {
+            dist[v] = dist[u] + actual->arista.peso;
+          }
         }
         actual = actual->siguiente;
       }
@@ -537,10 +569,14 @@ public:
            << ")" << endl;
       cout << "Hasta: " << vertices[sedeMaxIdx].codigoIATA << " ("
            << ciudades[sedeMaxIdx].nombreCiudad << ")" << endl;
+
       cout << "Distancia: " << maxDist << " km" << endl;
+
       cout << "País destino: " << ciudades[sedeMaxIdx].pais << endl;
     } else {
-      cout << "No se encontraron sedes conectadas." << endl;
+      cout << "No se encontraron sedes conectadas con el tipo de conexión "
+              "especificado."
+           << endl;
     }
   }
 

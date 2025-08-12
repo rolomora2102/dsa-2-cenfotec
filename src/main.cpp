@@ -228,8 +228,30 @@ void menuGrafo(Grafo &grafo) {
       cin >> origen;
       cout << CYAN << "Ingrese código IATA de destino: " << RESET;
       cin >> destino;
-      printTitulo("Ruta más corta entre " + origen + " y " + destino);
-      grafo.dijkstra(origen, destino);
+
+      int opcionTipo;
+      do {
+        printMenuTipoConexion();
+        cin >> opcionTipo;
+
+        switch (opcionTipo) {
+        case 1:
+          printTitulo("Ruta más corta (por distancia) entre " + origen + " y " +
+                      destino);
+          grafo.dijkstra(origen, destino, 1);
+          break;
+        case 2:
+          printTitulo("Ruta óptima (por vuelos) entre " + origen + " y " +
+                      destino);
+          grafo.dijkstra(origen, destino, 2);
+          break;
+        case 0:
+          printOK("Volviendo al menú anterior...");
+          break;
+        default:
+          printError("Opción inválida. Intente de nuevo.");
+        }
+      } while (opcionTipo != 0);
       break;
     }
     case 4: {
@@ -239,10 +261,30 @@ void menuGrafo(Grafo &grafo) {
       grafo.encontrarSedeMasLejana(base);
       break;
     }
-    case 5:
-      printTitulo("Árbol de Expansión Mínima");
-      grafo.prim();
+    case 5: {
+      int opcionTipo;
+      do {
+        printMenuTipoConexion();
+        cin >> opcionTipo;
+
+        switch (opcionTipo) {
+        case 1:
+          printTitulo("Árbol de Expansión Mínima (por distancia)");
+          grafo.prim(1);
+          break;
+        case 2:
+          printTitulo("Árbol de Expansión Mínima (por vuelos)");
+          grafo.prim(2);
+          break;
+        case 0:
+          printOK("Volviendo al menú anterior...");
+          break;
+        default:
+          printError("Opción inválida. Intente de nuevo.");
+        }
+      } while (opcionTipo != 0);
       break;
+    }
     case 6:
       printTitulo("Información de Ciudades Sede");
       grafo.mostrarCiudades();
